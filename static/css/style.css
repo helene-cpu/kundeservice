@@ -1,7 +1,6 @@
 /* Topnav */
 .topnav{
     display: flex;
-    justify-content:left;
     align-items: center;
     background-color: rgb(72, 163, 163);
     padding: 0.5rem 1rem;
@@ -23,9 +22,20 @@
     width: auto;
 }
 
+
+.admin_navbar {
+  margin-left: auto;
+}
+
+.admin_navbar a{
+    font-size: 1.5rem;
+    font-family: sans-serif;
+}
+
 /* send inn */
 
 .klage p{
     font-size: 3rem;
     text-align: center;
+    font-family: sans-serif;
 }
