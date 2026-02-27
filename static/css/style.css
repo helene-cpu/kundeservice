@@ -1,0 +1,24 @@
+/* Topnav */
+.topnav{
+    display: flex;
+    justify-content:left;
+    align-items: center;
+    background-color: rgb(72, 163, 163);
+    padding: 0.5rem 1rem;
+}
+
+.topnav a {
+    text-decoration: none;
+    color: black;
+    font-size: 1.5rem;
+    font-weight: bold;
+    font-family: sans-serif;
+    padding: 1rem 1rem;
+    text-align: center;
+}
+
+.topnav img {
+    height: 40px;
+    max-height: 50px;
+    width: auto;
+}
