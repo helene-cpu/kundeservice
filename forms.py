@@ -17,3 +17,14 @@ class ComplainForm(FlaskForm):
     ordernumber = StringField("Ordrenummer", validators=[InputRequired()])
     description = StringField("Beskrivelse", validators=[InputRequired()])
     submit = SubmitField("Send inn")
+
+class RegisterForm(FlaskForm):
+    navn = StringField("Navn", validators=[InputRequired()])
+    brukernavn = StringField("Brukernavn", validators=[InputRequired()])
+    passord = PasswordField("Passord", validators=[InputRequired()])
+    submit = SubmitField("Registrer")
+
+class LoginForm(FlaskForm):
+    brukernavn = StringField("Brukernavn", validators=[InputRequired()])
+    passord = PasswordField("Passord", validators=[InputRequired()])
+    submit = SubmitField("Logg inn")
