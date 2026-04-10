@@ -1,9 +1,10 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, SelectField
+from wtforms import StringField, PasswordField, SubmitField, SelectField, HiddenField
 from wtforms.validators import InputRequired
 
 class ComplainForm(FlaskForm):
     title = StringField("Tittel", validators=[InputRequired()])
+    epost = StringField("E-post", validators=[InputRequired()])
     category = SelectField("Hva gjelder saken?", choices= [
         ("---", ""),
         ("feil_vare", "Motatt feil vare"),
@@ -28,3 +29,7 @@ class LoginForm(FlaskForm):
     brukernavn = StringField("Brukernavn", validators=[InputRequired()])
     passord = PasswordField("Passord", validators=[InputRequired()])
     submit = SubmitField("Logg inn")
+
+class AnswerForm(FlaskForm):
+    svar = StringField("Svar", validators=[InputRequired()])
+    submit = SubmitField("Send svar")
