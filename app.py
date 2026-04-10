@@ -1,6 +1,6 @@
-from flask import Flask, render_template, redirect, session
+from flask import Flask, render_template, redirect, session, request
 import mysql.connector
-from forms import ComplainForm, RegisterForm, LoginForm
+from forms import ComplainForm, RegisterForm, LoginForm, AnswerForm
 from werkzeug.security import check_password_hash, generate_password_hash
 
 app = Flask (__name__)
@@ -26,12 +26,13 @@ def send():
         category = form.category.data
         ordernumber = form.ordernumber.data
         description = form.description.data
+        epost = form.epost.data
 
         conn = get_conn()
         cur = conn.cursor()
         cur.execute(
-        "INSERT INTO saker (Tittel, Kategori, Ordrenummer, Beskrivelse) VALUES (%s, %s, %s, %s)",
-         (title, category, ordernumber, description)
+        "INSERT INTO saker (Tittel, epost,  Kategori, Ordrenummer, Beskrivelse) VALUES (%s, %s, %s, %s, %s)",
+         (title, epost, category, ordernumber, description)
         )
 
         conn.commit()
@@ -60,7 +61,7 @@ def login():
         conn = get_conn()
         cur = conn.cursor()
         cur.execute(
-            "SELECT navn, passord FROM brukere WHERE brukernavn= %s",
+            "SELECT Navn, Passord FROM brukere WHERE brukernavn= %s",
             (brukernavn,)
         )
         user = cur.fetchone()
@@ -68,12 +69,16 @@ def login():
         conn.close()
 
         if user:
+            navn_db = user[0]
             passord_db = user[1]
 
             if check_password_hash(passord_db, passord):
-                session['navn'] = user[0]
+                session['navn'] = navn_db
                 return redirect("/admin")
     
+            else:
+                form.brukernavn.errors.append("Feil brukernavn eller passord")
+
         else:
             form.brukernavn.errors.append("Feil brukernavn eller passord")
 
@@ -102,6 +107,45 @@ def register():
         return redirect('/login')
 
     return render_template("register.html", form= form)
+
+
+@app.route('/admin', methods=["POST", "GET"])
+def admin():
+    if 'navn' not in session:
+        return redirect('/login')
+
+    form = AnswerForm()
+
+    if form.validate_on_submit():
+        svar = form.svar.data
+        sak_id = request.form.get('sak_id')
+
+        conn = get_conn()
+        cur = conn.cursor()
+        cur.execute(
+           "UPDATE saker SET Svar = %s, Status='Closed' WHERE Sak_ID = %s",
+           (svar, sak_id)
+        )
+
+        conn.commit()
+        cur.close()
+        conn.close()
+
+        return redirect ("/admin")
+
+    conn = get_conn()
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT Tittel, Kategori, Ordrenummer, Beskrivelse, Sak_ID FROM saker WHERE Svar IS NULL"
+    )
+
+    saker = cur.fetchall()
+
+    cur.close()
+    conn.close()
+    
+    
+    return render_template("admin.html", saker=saker, form = form)
 
 if __name__ == "__main__":
     app.run(debug=True)

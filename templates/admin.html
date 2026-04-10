@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Saker</h1>
+{% for sak in saker %}
+<p><strong>Kategori: </strong>{{ sak[1] }}</p> 
+    <p><strong>Ordrenummer: </strong>{{ sak[2] }}</p>
+    <p><strong>Beskrivelse: </strong>{{ sak[3] }}</p>
+    <p>{{ sak[4] }}</p> 
+
+<form method="POST">
+    {{ form.hidden_tag() }}
+<input type="hidden" name="sak_id" value="{{ sak[4] }}">
+    {{ form.svar.label }}{{ form.svar() }}<br>
+    {{ form.submit() }}
+</form>
+
+{% endfor %}
+
+{% endblock %}
