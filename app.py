@@ -2,6 +2,8 @@ from flask import Flask, render_template, redirect, session, request
 import mysql.connector
 from forms import ComplainForm, RegisterForm, LoginForm, AnswerForm
 from werkzeug.security import check_password_hash, generate_password_hash
+import sendgrid
+from sendgrid.helpers.mail import Mail, Email, To, Content
 
 app = Flask (__name__)
 app.config["SECRET_KEY"] = "superduperekstrahemmelig123"
@@ -13,6 +15,18 @@ def get_conn():
         password = "Kdhmjth1234#",
         database = "kundeservice"
 )
+
+SENDGRID_API_KEY = "din_api_nøkkel"
+
+def send_email(til_epost, tittel, svar):
+    sg = sendgrid.SendGridAPIClient(api_key=SENDGRID_API_KEY)
+    message = Mail(
+        from_email="din_verifiserte@epost.com",
+        to_emails=til_epost,
+        subject=f"Svar på din sak: {tittel}",
+        plain_text_content=f"Hei!\n\nVi har svart på din sak:\n\n{svar}\n\nMed vennlig hilsen\nKundeservice"
+    )
+    sg.send(message)
 
 @app.route('/')
 def index():
@@ -143,6 +157,9 @@ def admin():
 
     cur.close()
     conn.close()
+
+
+    send_email(sak[0], sak[1], svar)
     
     
     return render_template("admin.html", saker=saker, form = form)
