@@ -4,6 +4,7 @@ from forms import ComplainForm, RegisterForm, LoginForm, AnswerForm
 from werkzeug.security import check_password_hash, generate_password_hash
 import sendgrid
 from sendgrid.helpers.mail import Mail, Email, To, Content
+from config import SENDGRID_API_KEY
 
 app = Flask (__name__)
 app.config["SECRET_KEY"] = "superduperekstrahemmelig123"
