@@ -17,14 +17,20 @@ def get_conn():
         database = "kundeservice"
 )
 
-def send_email(til_epost, tittel, svar):
+def send_email(til_epost, tittel, beskrivelse, svar):
     sg = sendgrid.SendGridAPIClient(api_key=SENDGRID_API_KEY)
     message = Mail(
         from_email=SENDGRID_FROM_EMAIL, 
         to_emails=til_epost,
-        subject=f"Svar på din sak: {tittel}",
-        plain_text_content=f"Hei!\n\nVi har svart på din sak:\n\n{svar}\n\nMed vennlig hilsen\nKundeservice"
     )
+    
+    message.template_id = "d-fefb43292e7b4c4e91b7c8d16c8eab77"
+
+    message.dynamic_template_data = {
+        "Tittel": tittel,
+        "Beskrivelse": beskrivelse,
+        "Svar": svar
+    }
     sg.send(message)
 
 @app.route('/')
@@ -142,14 +148,14 @@ def admin():
 
         conn.commit()
         cur.execute(
-            "SELECT epost, Tittel FROM saker WHERE Sak_ID = %s",
+            "SELECT epost, Tittel, Beskrivelse FROM saker WHERE Sak_ID = %s",
             (sak_id,)
         )
         sak = cur.fetchone()
         cur.close()
         conn.close()
 
-        send_email(sak[0], sak[1], svar)
+        send_email(sak[0], sak[1], sak[2], svar)
 
         return redirect("/admin")
 
