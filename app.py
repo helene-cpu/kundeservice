@@ -5,6 +5,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 import sendgrid
 from sendgrid.helpers.mail import Mail, Email, To, Content
 from config import SENDGRID_API_KEY, SENDGRID_FROM_EMAIL
+import random, string
 
 app = Flask (__name__)
 app.config["SECRET_KEY"] = "superduperekstrahemmelig123"
@@ -23,6 +24,11 @@ def send_email(til_epost, tittel, beskrivelse, svar):
         from_email=SENDGRID_FROM_EMAIL, 
         to_emails=til_epost,
     )
+
+def generate_ordrenummer(length=9):
+    characters= string.ascii_letters + string.digits
+    tegn_liste = [random.choice(characters) for _ in range(length)]
+    return ''.join(tegn_liste)
     
     message.template_id = "d-fefb43292e7b4c4e91b7c8d16c8eab77"
 
