@@ -18,7 +18,7 @@ def get_conn():
         database = "kundeservice"
 )
 
-def send_email(til_epost, tittel, beskrivelse, svar):
+def send_email(til_epost, tittel, beskrivelse, svar, ordrenummer):
     sg = sendgrid.SendGridAPIClient(api_key=SENDGRID_API_KEY)
     message = Mail(
         from_email=SENDGRID_FROM_EMAIL, 
@@ -31,7 +31,8 @@ def send_email(til_epost, tittel, beskrivelse, svar):
     message.dynamic_template_data = {
         "Tittel": tittel,
         "Beskrivelse": beskrivelse,
-        "Svar": svar
+        "Svar": svar,
+        "Ordrenummer": ordrenummer
     }
     sg.send(message)
 
@@ -66,6 +67,8 @@ def send():
         cur.close()
         conn.close()
 
+        print("Sender:", sak[0], sak[1], sak[2], svar, sak[3])
+
 
         return redirect("/sendt")
 
@@ -73,6 +76,8 @@ def send():
 
 @app.route('/sendt')
 def sendt():
+
+    print("Sender:", sak[0], sak[1], sak[2], svar, sak[3])
 
     ordrenummer = session.get('ordrenummer')
     return render_template("sendt.html", Nummer=ordrenummer)
@@ -97,6 +102,8 @@ def login():
         user = cur.fetchone()
         cur.close()
         conn.close()
+
+        print("Sender:", sak[0], sak[1], sak[2], svar, sak[3])
 
         if user:
             navn_db = user[0]
@@ -159,14 +166,14 @@ def admin():
 
         conn.commit()
         cur.execute(
-            "SELECT epost, Tittel, Beskrivelse FROM saker WHERE Sak_ID = %s",
+            "SELECT epost, Tittel, Beskrivelse, Ordrenummer FROM saker WHERE Sak_ID = %s",
             (sak_id,)
         )
         sak = cur.fetchone()
         cur.close()
         conn.close()
 
-        send_email(sak[0], sak[1], sak[2], svar)
+        send_email(sak[0], sak[1], sak[2], svar, sak[3])
 
         return redirect("/admin")
 
