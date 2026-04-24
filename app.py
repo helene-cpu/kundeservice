@@ -25,11 +25,7 @@ def send_email(til_epost, tittel, beskrivelse, svar):
         to_emails=til_epost,
     )
 
-def generate_ordrenummer(length=9):
-    characters= string.ascii_letters + string.digits
-    tegn_liste = [random.choice(characters) for _ in range(length)]
-    return ''.join(tegn_liste)
-    
+        
     message.template_id = "d-fefb43292e7b4c4e91b7c8d16c8eab77"
 
     message.dynamic_template_data = {
@@ -38,6 +34,11 @@ def generate_ordrenummer(length=9):
         "Svar": svar
     }
     sg.send(message)
+
+def generate_ordrenummer(length=9):
+    characters= string.ascii_letters + string.digits
+    tegn_liste = [random.choice(characters) for _ in range(length)]
+    return ''.join(tegn_liste)
 
 @app.route('/')
 def index():
@@ -49,20 +50,22 @@ def send():
     if form.validate_on_submit():
         title = form.title.data
         category = form.category.data
-        ordernumber = form.ordernumber.data
         description = form.description.data
         epost = form.epost.data
+        ordrenummer= generate_ordrenummer()
+
+        session['ordrenummer'] = ordrenummer
 
         conn = get_conn()
         cur = conn.cursor()
         cur.execute(
-        "INSERT INTO saker (Tittel, epost,  Kategori, Ordrenummer, Beskrivelse) VALUES (%s, %s, %s, %s, %s)",
-         (title, epost, category, ordernumber, description)
+        "INSERT INTO saker (Tittel, epost,  Kategori, Beskrivelse, Ordrenummer) VALUES (%s, %s, %s, %s, %s)",
+         (title, epost, category, description, ordrenummer)
         )
-
         conn.commit()
         cur.close()
         conn.close()
+
 
         return redirect("/sendt")
 
@@ -70,7 +73,9 @@ def send():
 
 @app.route('/sendt')
 def sendt():
-    return render_template("sendt.html")
+
+    ordrenummer = session.get('ordrenummer')
+    return render_template("sendt.html", Nummer=ordrenummer)
 
 @app.route('/kontakt')
 def kontakt():

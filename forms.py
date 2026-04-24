@@ -15,7 +15,6 @@ class ComplainForm(FlaskForm):
         ("annet", "Annet")
         ], validators=[InputRequired()]
     )
-    ordernumber = StringField("Ordrenummer", validators=[InputRequired()])
     description = StringField("Beskrivelse", validators=[InputRequired()])
     submit = SubmitField("Send inn")
 
