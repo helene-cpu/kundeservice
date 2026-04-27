@@ -67,8 +67,6 @@ def send():
         cur.close()
         conn.close()
 
-        print("Sender:", sak[0], sak[1], sak[2], svar, sak[3])
-
 
         return redirect("/sendt")
 
@@ -76,9 +74,6 @@ def send():
 
 @app.route('/sendt')
 def sendt():
-
-    print("Sender:", sak[0], sak[1], sak[2], svar, sak[3])
-
     ordrenummer = session.get('ordrenummer')
     return render_template("sendt.html", Nummer=ordrenummer)
 
@@ -102,8 +97,6 @@ def login():
         user = cur.fetchone()
         cur.close()
         conn.close()
-
-        print("Sender:", sak[0], sak[1], sak[2], svar, sak[3])
 
         if user:
             navn_db = user[0]
@@ -160,7 +153,7 @@ def admin():
         conn = get_conn()
         cur = conn.cursor()
         cur.execute(
-           "UPDATE saker SET Svar = %s, Status='Closed' WHERE Sak_ID = %s",
+           "UPDATE saker SET Svar = %s WHERE Sak_ID = %s",
            (svar, sak_id)
         )
 
