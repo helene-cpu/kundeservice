@@ -55,6 +55,28 @@ def send():
         epost = form.epost.data
         ordrenummer= generate_ordrenummer()
 
+        conn = get_conn()
+        cur= conn.cursor()
+        cur.execute(
+            "SELECT Ordrenummer FROM saker WHERE Ordrenummer= %s", 
+            (ordrenummer, )
+        )
+        eksisterer = cur.fetchone()
+
+        if eksisterer:
+            while True:
+                ordrenummer = generate_ordrenummer()
+                cur.execute( 
+                "SELECT Ordrenummer FROM saker WHERE Ordrenummer = %s", 
+                    (ordrenummer,)
+                )
+                eksisterer = cur.fetchone()
+                if not eksisterer:
+                    break
+
+        cur.close()
+        conn.close()
+       
         session['ordrenummer'] = ordrenummer
 
         conn = get_conn()
@@ -137,7 +159,6 @@ def register():
         return redirect('/login')
 
     return render_template("register.html", form= form)
-
 
 @app.route('/admin', methods=["POST", "GET"])
 def admin():
