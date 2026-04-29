@@ -205,5 +205,12 @@ def admin():
     
     return render_template("admin.html", saker=saker, form = form)
 
+@app.route('/manual', methods= ["POST", "GET"])
+def manual():
+    if 'navn' not in session:
+        return redirect('/')
+
+    return render_template("manual.html")
+
 if __name__ == "__main__":
     app.run(debug=True)
