@@ -32,6 +32,41 @@
     font-family: sans-serif;
 }
 
+
+/* Topnav admin */
+.admin_navbar{
+    display: flex;
+    align-items: center;
+    background-color: rgb(72, 163, 163);
+    padding: 0.5rem 1rem;
+}
+
+.admin_navbar a {
+    text-decoration: none;
+    color: black;
+    font-size: 1.5rem;
+    font-weight: bold;
+    font-family: sans-serif;
+    padding: 1rem 1rem;
+    text-align: center;
+}
+
+.admin_navbar img {
+    height: 40px;
+    max-height: 50px;
+    width: auto;
+}
+
+
+.loggut {
+  margin-left: auto;
+}
+
+.loggut a{
+    font-size: 1.5rem;
+    font-family: sans-serif;
+}
+
 /* send inn */
 
 .klage p{
